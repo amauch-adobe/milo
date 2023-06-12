@@ -66,15 +66,6 @@ export function decorateBlockBg(block, node) {
       [...node.children].forEach((e, i) => {
         /* c8 ignore next */
         e.classList.add(viewports[i]);
-        /* const image = e.querySelector('img');
-        if (image) {
-          const text = e.textContent.trim();
-          if (text !== '') {
-            const points = text?.slice(text.indexOf(':') + 1).split(',');
-            const [x, y = ''] = points;
-            image.style.objectPosition = `${x.trim().toLowerCase()} ${y.trim().toLowerCase()}`;
-          }
-        } */
       });
     }
   }

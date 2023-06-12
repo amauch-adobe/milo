@@ -61,11 +61,13 @@
   padding: var(--spacing-xs) 0;
 }
 
-.section.border-radius-4 > div {
+.section.border-radius-s > div,
+.section.border-radius-s > div .background {
   border-radius: 4px;
 }
 
-.section.border-radius-16 > div {
+.section.border-radius-l > div,
+.section.border-radius-l > div .background {
   border-radius: 16px;
 }
 
