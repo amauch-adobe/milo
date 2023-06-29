@@ -18,7 +18,11 @@ const blockTypeSizes = {
 };
 
 function goToDataHref() {
-  window.location.href = this.dataset.href;
+  if (this.dataset.target === '_blank') {
+    window.open(this.dataset.href, '_blank');
+  } else {
+    window.location.href = this.dataset.href;
+  }
 }
 
 function getBlockSize(el) {
@@ -106,6 +110,15 @@ function decorateBlockBg(block, node) {
   }
 }
 
+function enforceHeaderLevel(node, level) {
+  const clone = document.createElement(`H${level}`);
+  for (const attr of node.attributes) {
+    clone.setAttribute(attr.name, attr.value)
+  }
+  clone.innerText = node.innerText;
+  node.replaceWith(clone);
+}
+
 export default function init(el) {
   const blockSize = getBlockSize(el);
   decorateButtons(el, `button-${blockTypeSizes[blockSize][3]}`);
@@ -154,6 +167,15 @@ export default function init(el) {
     rows = tail;
   }
 
+  const headers = el.querySelectorAll('h1, h2, h3, h4, h5, h6, .highlight-row > *');
+  headers.forEach((header, counter) => {
+    if (!counter) {
+      enforceHeaderLevel(header, 3);
+    } else {
+      enforceHeaderLevel(header, 4);
+    }
+  })
+
   const config = blockTypeSizes[blockSize];
   const overrides = ['-heading', '-body', '-detail'];
   overrides.forEach((override, index) => {
@@ -168,6 +190,9 @@ export default function init(el) {
     if (el.classList.contains('click-pod') && links.length) {
       const link = links[0];
       el.dataset.href = link.href;
+      if (link.hasAttribute('target')) {
+        el.dataset.target = link.getAttribute('target');
+      }
       el.addEventListener('click', goToDataHref);
     }
   }

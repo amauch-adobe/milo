@@ -94,10 +94,10 @@
   cursor: pointer;
 }
 
-.homepage.link-pod h4 {
+/* .homepage.link-pod h4 {
   font-size: var(--type-body-s-size);
   margin-bottom: 0;
-}
+} */
 
 .homepage.link-pod .foreground > div {
   padding: var(--spacing-s) var(--spacing-s) 0 var(--spacing-s);
@@ -175,6 +175,12 @@
 .homepage.link-pod .highlight-row {
   color: #FFF;
   background: linear-gradient(125deg, rgba(237, 5, 41, 1) 0%, rgba(155, 0, 193, 1) 50%, rgba(91, 0, 198, 1) 100%) ;
+  font-weight: 700;
+  padding: 24px 24px 20px 24px;
+}
+
+.homepage.link-pod hr {
+  margin-bottom: 17px;
 }
 
 .homepage.news-pod .highlight-row {
