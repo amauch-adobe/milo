@@ -1,4 +1,5 @@
 import { decorateButtons, decorateBlockText } from '../../utils/decorate.js';
+import { decorateBlockAnalytics, decorateLinkAnalytics } from '../../martech/attributes.js';
 
 // size: [heading, body, ...detail]
 // blockTypeSizes array order: heading, body, detail, button, link
@@ -113,13 +114,14 @@ function decorateBlockBg(block, node) {
 function enforceHeaderLevel(node, level) {
   const clone = document.createElement(`H${level}`);
   for (const attr of node.attributes) {
-    clone.setAttribute(attr.name, attr.value)
+    clone.setAttribute(attr.name, attr.value);
   }
   clone.innerText = node.innerText;
   node.replaceWith(clone);
 }
 
 export default function init(el) {
+  decorateBlockAnalytics(el);
   const blockSize = getBlockSize(el);
   decorateButtons(el, `button-${blockTypeSizes[blockSize][3]}`);
   decorateLinks(el, blockTypeSizes[blockSize][4]);
@@ -174,8 +176,7 @@ export default function init(el) {
     } else {
       enforceHeaderLevel(header, 4);
     }
-  })
-
+  });
   const config = blockTypeSizes[blockSize];
   const overrides = ['-heading', '-body', '-detail'];
   overrides.forEach((override, index) => {
@@ -185,6 +186,10 @@ export default function init(el) {
   decorateBlockText(el, config);
   rows.forEach((row) => { row.classList.add('foreground'); });
 
+  const heading = el.querySelector('h3, h4');
+  const text = heading.closest('.foreground');
+  decorateLinkAnalytics(text, headers);
+
   if (el.classList.contains('link-pod') || el.classList.contains('click-pod') || el.classList.contains('news-pod')) {
     const links = el.querySelectorAll('a');
     if (el.classList.contains('click-pod') && links.length) {
@@ -193,6 +198,7 @@ export default function init(el) {
       if (link.hasAttribute('target')) {
         el.dataset.target = link.getAttribute('target');
       }
+      if (link.hasAttribute('daa-ll')) el.setAttribute('daa-ll', link.getAttribute('daa-ll'));
       el.addEventListener('click', goToDataHref);
     }
   }
