@@ -198,7 +198,7 @@ export default function init(el) {
       if (link.hasAttribute('target')) {
         el.dataset.target = link.getAttribute('target');
       }
-      if (link.hasAttribute('daa-ll')) el.setAttribute('daa-ll', link.getAttribute('daa-ll'));
+      if (link.hasAttribute('daa-ll')) text.setAttribute('daa-ll', link.getAttribute('daa-ll'));
       el.addEventListener('click', goToDataHref);
     }
   }
