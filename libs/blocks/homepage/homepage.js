@@ -121,7 +121,6 @@ function enforceHeaderLevel(node, level) {
 }
 
 export default function init(el) {
-  decorateBlockAnalytics(el);
   const blockSize = getBlockSize(el);
   decorateButtons(el, `button-${blockTypeSizes[blockSize][3]}`);
   decorateLinks(el, blockTypeSizes[blockSize][4]);
@@ -186,8 +185,9 @@ export default function init(el) {
   decorateBlockText(el, config);
   rows.forEach((row) => { row.classList.add('foreground'); });
 
+  decorateBlockAnalytics(el);
   const heading = el.querySelector('h3, h4');
-  const text = heading.closest('.foreground');
+  const text = heading.closest('.foreground') || heading.closest('.highlight-row');
   decorateLinkAnalytics(text, headers);
 
   if (el.classList.contains('link-pod') || el.classList.contains('click-pod') || el.classList.contains('news-pod')) {
@@ -198,7 +198,13 @@ export default function init(el) {
       if (link.hasAttribute('target')) {
         el.dataset.target = link.getAttribute('target');
       }
-      if (link.hasAttribute('daa-ll')) text.setAttribute('daa-ll', link.getAttribute('daa-ll'));
+      if (link.hasAttribute('daa-ll')) {
+        el.setAttribute('id', `${el.getAttribute('daa-lh')}|${text.getAttribute('daa-lh')}|${link.getAttribute('daa-ll')}`);
+        el.setAttribute('daa-ll', `${el.getAttribute('daa-lh')}|${link.getAttribute('daa-ll')}`);
+        el.removeAttribute('daa-lh');
+        text.removeAttribute('daa-lh');
+        link.removeAttribute('daa-ll');
+      }
       el.addEventListener('click', goToDataHref);
     }
   }
