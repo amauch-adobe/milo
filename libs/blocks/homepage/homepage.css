@@ -90,10 +90,6 @@
   line-height: var(--type-detail-l-lh);
 }
 
-.homepage.click-pod {
-  cursor: pointer;
-}
-
 /* .homepage.link-pod h4 {
   font-size: var(--type-body-s-size);
   margin-bottom: 0;
@@ -108,9 +104,14 @@
 }
 
 .homepage,
-.homepage[class*="highlight"] > div,
-.homepage.link-pod.split-background  .foreground > div {
+.homepage.link-pod.split-background  .foreground > div,
+.homepage[class*="highlight"] > div {
   padding: var(--spacing-s);
+}
+
+.homepage.click-pod {
+  padding-top: 32px;
+  cursor: pointer;
 }
 
 .homepage.link-pod,
