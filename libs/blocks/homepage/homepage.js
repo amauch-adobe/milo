@@ -200,7 +200,7 @@ export default function init(el) {
       }
       if (link.hasAttribute('daa-ll')) {
         el.setAttribute('id', `${el.getAttribute('daa-lh')}|${text.getAttribute('daa-lh')}|${link.getAttribute('daa-ll')}`);
-        el.setAttribute('daa-ll', `${el.getAttribute('daa-lh')}|${link.getAttribute('daa-ll')}`);
+        el.setAttribute('daa-ll', `${el.getAttribute('daa-lh')}|${text.getAttribute('daa-lh')}|${link.getAttribute('daa-ll')}`);
         el.removeAttribute('daa-lh');
         text.removeAttribute('daa-lh');
         link.removeAttribute('daa-ll');
