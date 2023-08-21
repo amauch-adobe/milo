@@ -32,8 +32,9 @@ export default async function init(a) {
   const { expFragments } = getConfig();
   let relHref = localizeLink(a.href);
   if (expFragments?.[relHref]) {
-    a.href = expFragments[relHref];
-    relHref = expFragments[relHref];
+    a.href = expFragments[relHref].val;
+    a.dataset.fragmentManifestId = expFragments[relHref].mepTracking;
+    relHref = expFragments[relHref].val;
   }
   if (isCircularRef(relHref)) {
     window.lana?.log(`ERROR: Fragment Circular Reference loading ${a.href}`);
@@ -50,7 +51,7 @@ export default async function init(a) {
 
       updateFragMap(fragment, a, relHref);
 
-      if (a.dataset.manifestId) {
+      if (a.dataset.manifestId || a.dataset.fragmentManifestId) {
         import('../../features/personalization/add-fragment-link-headers.js')
           .then(({ default: addFragmentLinkHeaders }) => addFragmentLinkHeaders(fragment, a));
       }

@@ -49,30 +49,30 @@ const DATA_TYPE = {
   TEXT: 'text',
 };
 
-const createFrag = (url, manifestId) => {
+const createFrag = (url, trackingId) => {
   const a = createTag('a', { href: url }, url);
-  if (manifestId) a.dataset.manifestId = manifestId;
+  a.dataset.manifestId = trackingId;
   const p = createTag('p', undefined, a);
   loadLink(`${url}.plain.html`, { as: 'fetch', crossorigin: 'anonymous', rel: 'preload' });
   return p;
 };
 
 const COMMANDS = {
-  insertcontentafter: (el, target, manifestId) => el
-    .insertAdjacentElement('afterend', createFrag(target, manifestId)),
-  insertcontentbefore: (el, target, manifestId) => el
-    .insertAdjacentElement('beforebegin', createFrag(target, manifestId)),
-  removecontent: (el, target, manifestId) => {
+  insertcontentafter: (el, target, trackingId) => el
+    .insertAdjacentElement('afterend', createFrag(target, trackingId)),
+  insertcontentbefore: (el, target, trackingId) => el
+    .insertAdjacentElement('beforebegin', createFrag(target, trackingId)),
+  removecontent: (el, target, trackingId, preview) => {
     if (target === 'false') return;
-    if (manifestId) {
-      const div = createTag('div', { 'data-removed-manifest-id': manifestId });
+    if (preview) {
+      const div = createTag('div', { 'data-removed-manifest-id': trackingId });
       el.insertAdjacentElement('beforebegin', div);
     }
     el.classList.add(CLASS_EL_DELETE);
   },
-  replacecontent: (el, target, manifestId) => {
+  replacecontent: (el, target, trackingId) => {
     if (el.classList.contains(CLASS_EL_REPLACE)) return;
-    el.insertAdjacentElement('beforebegin', createFrag(target, manifestId));
+    el.insertAdjacentElement('beforebegin', createFrag(target, trackingId));
     el.classList.add(CLASS_EL_DELETE, CLASS_EL_REPLACE);
   },
 };
@@ -107,7 +107,14 @@ const fetchData = async (url, type = DATA_TYPE.JSON) => {
 
 const consolidateObjects = (arr, prop) => arr.reduce((propMap, item) => {
   item[prop]?.forEach((i) => {
-    propMap[i.selector] = i.val;
+    let { selector } = i;
+    if (prop === 'blocks') selector = i.val.split('/').pop();
+    if (selector) {
+      propMap[selector] = {
+        val: i.val,
+        mepTracking: item.mepTracking,
+      };
+    }
   });
   return propMap;
 }, {});
@@ -177,7 +184,7 @@ function normalizeKeys(obj) {
   }, {});
 }
 
-function handleCommands(commands, manifestId, rootEl = document) {
+function handleCommands(commands, trackingId, preview, rootEl = document) {
   commands.forEach((cmd) => {
     if (VALID_COMMANDS.includes(cmd.action)) {
       let selectorEl = rootEl.querySelector(cmd.selector);
@@ -188,7 +195,7 @@ function handleCommands(commands, manifestId, rootEl = document) {
         selectorEl = selectorEl.parentElement || selectorEl;
       }
 
-      COMMANDS[cmd.action](selectorEl, cmd.target, manifestId);
+      COMMANDS[cmd.action](selectorEl, cmd.target, trackingId, preview);
     } else {
       /* c8 ignore next 2 */
       console.log('Invalid command found: ', cmd);
@@ -464,7 +471,7 @@ const normalizeFragPaths = ({ selector, val }) => ({
   val: normalizePath(val),
 });
 
-export async function runPersonalization(info, config) {
+export async function runPersonalization(info, preview) {
   const {
     name,
     manifestData,
@@ -485,19 +492,20 @@ export async function runPersonalization(info, config) {
   if (selectedVariant.replacepage) {
     // only one replacepage can be defined
     await replaceInner(selectedVariant.replacepage[0]?.val, document.querySelector('main'));
-    document.querySelector('main').dataset.manifestId = manifestPath;
+    document.querySelector('main').dataset.mepTracking = manifestPath;
   }
 
   selectedVariant.insertscript?.map((script) => loadScript(script.val));
   selectedVariant.updatemetadata?.map((metadata) => setMetadata(metadata));
 
-  let manifestId = experiment.manifest;
-  if (!config.mep?.preview) {
-    manifestId = false;
-  } else if (experiment.name) {
-    manifestId = `${experiment.name}: ${manifestId}`;
+  let mepTracking = '';
+  if (experiment.name) {
+    mepTracking = experiment.name;
+  } else {
+    mepTracking = experiment.manifest?.split('/').slice(-1)[0]?.split('.')[0];
   }
-  handleCommands(selectedVariant.commands, manifestId);
+  mepTracking = `${mepTracking.slice(0, 8)}--${experiment.selectedVariantName.slice(0, 8)}`;
+  handleCommands(selectedVariant.commands, mepTracking, preview);
 
   selectedVariant.replacefragment &&= selectedVariant.replacefragment.map(normalizeFragPaths);
 
@@ -505,6 +513,7 @@ export async function runPersonalization(info, config) {
     experiment,
     blocks: selectedVariant.useblockcode,
     fragments: selectedVariant.replacefragment,
+    mepTracking,
   };
 }
 
@@ -549,7 +558,7 @@ export async function applyPers(manifests) {
 
   let results = [];
   for (const manifest of cleanedManifests) {
-    results.push(await runPersonalization(manifest, config));
+    results.push(await runPersonalization(manifest, config.mep?.preview));
   }
   results = results.filter(Boolean);
   deleteMarkedEls();

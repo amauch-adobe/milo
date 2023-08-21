@@ -379,9 +379,7 @@ export async function loadTemplate() {
 function checkForExpBlock(name, expBlocks) {
   const expBlock = expBlocks?.[name];
   if (!expBlock) return null;
-
-  const blockName = expBlock.split('/').pop();
-  return { blockPath: expBlock, blockName };
+  return { blockPath: expBlock.val, blockName: name, tracking: expBlock.mepTracking };
 }
 
 export async function loadBlock(block) {
@@ -395,6 +393,13 @@ export async function loadBlock(block) {
   if (expBlock) {
     name = expBlock.blockName;
     path = expBlock.blockPath;
+    block.dataset.codeManifestId = expBlock.tracking;
+    const daaLh = block.getAttribute('daa-lh');
+    if (!daaLh) {
+      block.setAttribute('daa-lh', expBlock.tracking);
+    } else if (!daaLh.includes(expBlock.tracking)) {
+      block.setAttribute('daa-lh', `${expBlock.tracking}--${daaLh}`);
+    }
   }
 
   const blockPath = `${path}/${name}`;

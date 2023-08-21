@@ -271,6 +271,7 @@ input#new-manifest {
 
 /* mepHighlight */
 body[data-mep-highlight='true'] [data-manifest-id],
+body[data-mep-highlight='true'] [data-fragment-manifest-id],
 body[data-mep-highlight='true'] [data-code-manifest-id],
 body[data-mep-highlight='true'] [data-removed-manifest-id] {
   outline: 3px #26ceef dashed !important;
@@ -287,6 +288,7 @@ body[data-mep-highlight='true'] [data-removed-manifest-id] {
 }
 
 body[data-mep-highlight='true'] [data-manifest-id]::before,
+body[data-mep-highlight='true'] [data-fragment-manifest-id]::before,
 body[data-mep-highlight='true'] [data-code-manifest-id]::before,
 body[data-mep-highlight='true'] [data-removed-manifest-id]::before {
   content: 'content updated by: ' attr(data-manifest-id);
@@ -306,6 +308,10 @@ body[data-mep-highlight='true'] [data-removed-manifest-id]::before {
   border: 1px solid #1ad8ff;
   border-radius: 5px;
   box-shadow: 0 3px 8px 1px #808080;
+}
+
+body[data-mep-highlight='true'] [data-fragment-manifest-id]::before {
+  content: 'fragment replaced by: ' attr(data-fragment-manifest-id);
 }
 
 body[data-mep-highlight='true'] [data-code-manifest-id]::before {
