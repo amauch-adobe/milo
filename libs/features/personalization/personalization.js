@@ -505,7 +505,7 @@ export async function runPersonalization(info, preview) {
   } else {
     mepTracking = experiment.manifest?.split('/').slice(-1)[0]?.split('.')[0];
   }
-  mepTracking = `${mepTracking.slice(0, 8)}--${experiment.selectedVariantName.replace('target-', '').slice(0, 8)}`;
+  mepTracking = `${mepTracking.slice(0, 12)}--${experiment.selectedVariantName.slice(0, 15)}`;
   handleCommands(selectedVariant.commands, mepTracking, preview);
 
   selectedVariant.replacefragment &&= selectedVariant.replacefragment.map(normalizeFragPaths);
