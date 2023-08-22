@@ -393,14 +393,7 @@ export async function loadBlock(block) {
   if (expBlock) {
     name = expBlock.blockName;
     path = expBlock.blockPath;
-    block.dataset.manifestId = expBlock.tracking;
-    block.dataset.manifestAction = 'code';
-    const daaLh = block.getAttribute('daa-lh');
-    if (!daaLh) {
-      block.setAttribute('daa-lh', expBlock.tracking);
-    } else if (!daaLh.includes(expBlock.tracking)) {
-      block.setAttribute('daa-lh', `${expBlock.tracking}--${daaLh}`);
-    }
+    block.dataset.manifestCodeId = expBlock.tracking;
   }
 
   const blockPath = `${path}/${name}`;
