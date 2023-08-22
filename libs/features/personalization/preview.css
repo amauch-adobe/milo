@@ -271,27 +271,23 @@ input#new-manifest {
 
 /* mepHighlight */
 body[data-mep-highlight='true'] [data-manifest-id],
-body[data-mep-highlight='true'] [data-fragment-manifest-id],
-body[data-mep-highlight='true'] [data-code-manifest-id],
-body[data-mep-highlight='true'] [data-removed-manifest-id] {
+body[data-mep-highlight='true'] [data-manifest-code-id] {
   outline: 3px #26ceef dashed !important;
   box-shadow: 3px 3px 13px 0 #8f8f8f !important;
   position: relative;
 }
 
-body[data-mep-highlight='true'] [data-code-manifest-id] {
-  outline: 3px #6626ef dashed !important;
+body[data-mep-highlight='true'] [data-manifest-code-id] {
+  outline-color: #6626ef !important;
 }
 
-body[data-mep-highlight='true'] [data-removed-manifest-id] {
-  outline: 3px #ef3726 dashed !important;
+body[data-mep-highlight='true'] [data-manifest-id][data-manifest-action="remove"] {
+  outline-color: #ef3726 !important;
 }
 
 body[data-mep-highlight='true'] [data-manifest-id]::before,
-body[data-mep-highlight='true'] [data-fragment-manifest-id]::before,
-body[data-mep-highlight='true'] [data-code-manifest-id]::before,
-body[data-mep-highlight='true'] [data-removed-manifest-id]::before {
-  content: 'content updated by: ' attr(data-manifest-id);
+body[data-mep-highlight='true'] [data-manifest-code-id]::after {
+  content: 'content replaced by: ' attr(data-manifest-id);
   font-size: 14px !important;
   min-height: 20px !important;
   min-width: 60px !important;
@@ -310,22 +306,26 @@ body[data-mep-highlight='true'] [data-removed-manifest-id]::before {
   box-shadow: 0 3px 8px 1px #808080;
 }
 
-body[data-mep-highlight='true'] [data-fragment-manifest-id]::before {
-  content: 'fragment replaced by: ' attr(data-fragment-manifest-id);
+body[data-mep-highlight='true'] [data-manifest-id][data-manifest-action="fragment"]::before {
+  content: 'content replaced by: ' attr(data-manifest-id);
 }
 
-body[data-mep-highlight='true'] [data-code-manifest-id]::before {
-  content: 'code updated by: ' attr(data-code-manifest-id);
+body[data-mep-highlight='true'] [data-manifest-id][data-manifest-action="replace"]::before {
+  content: 'fragment replaced by: ' attr(data-manifest-id);
+}
+
+body[data-mep-highlight='true'] [data-manifest-code-id]::after {
+  content: 'code updated by: ' attr(data-manifest-id);
   background-color: #d2cbff !important;
-  border: 1px solid #6626ef;
+  border-color: #6626ef;
   left: unset;
   right: 5px;
 }
 
-body[data-mep-highlight='true'] [data-removed-manifest-id]::before {
-  content: 'content was removed by: ' attr(data-removed-manifest-id);
+body[data-mep-highlight='true'] [data-manifest-id][data-manifest-action="remove"]::before {
+  content: 'content was removed by: ' attr(data-manifest-id);
   background-color: #ffe0e4 !important;
-  border: 1px solid #ef3726;
+  border-color: #ef3726;
 }
 
 body[data-mep-highlight='true'] main[data-manifest-id]::before {

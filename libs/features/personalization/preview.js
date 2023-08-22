@@ -236,7 +236,8 @@ function addMarkerData(manifests) {
     manifest?.selectedVariant.useblockcode?.forEach((item) => {
       if (item.selector) {
         document.querySelectorAll(`.${item.selector}`).forEach((el) => {
-          el.dataset.codeManifestId = manifest.manifest;
+          el.dataset.manifestId = manifest.manifest;
+          el.dataset.manifestId = manifest.manifest;
         });
       }
     });

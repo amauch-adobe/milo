@@ -33,7 +33,8 @@ export default async function init(a) {
   let relHref = localizeLink(a.href);
   if (expFragments?.[relHref]) {
     a.href = expFragments[relHref].val;
-    a.dataset.fragmentManifestId = expFragments[relHref].mepTracking;
+    a.dataset.manifestId = expFragments[relHref].mepTracking;
+    a.dataset.manifestAction = 'fragment';
     relHref = expFragments[relHref].val;
   }
   if (isCircularRef(relHref)) {
@@ -54,8 +55,6 @@ export default async function init(a) {
       if (a.dataset.manifestId || a.dataset.fragmentManifestId) {
         import('../../features/personalization/add-fragment-link-headers.js')
           .then(({ default: addFragmentLinkHeaders }) => addFragmentLinkHeaders(fragment, a));
-      } else {
-        fragment.setAttribute('daa-lh', 'default');
       }
       a.parentElement.replaceChild(fragment, a);
 

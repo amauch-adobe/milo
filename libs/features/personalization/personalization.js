@@ -49,9 +49,10 @@ const DATA_TYPE = {
   TEXT: 'text',
 };
 
-const createFrag = (url, trackingId) => {
+const createFrag = (url, trackingId, action) => {
   const a = createTag('a', { href: url }, url);
   a.dataset.manifestId = trackingId;
+  a.dataset.manifestAction = action;
   const p = createTag('p', undefined, a);
   loadLink(`${url}.plain.html`, { as: 'fetch', crossorigin: 'anonymous', rel: 'preload' });
   return p;
@@ -59,20 +60,20 @@ const createFrag = (url, trackingId) => {
 
 const COMMANDS = {
   insertcontentafter: (el, target, trackingId) => el
-    .insertAdjacentElement('afterend', createFrag(target, trackingId)),
+    .insertAdjacentElement('afterend', createFrag(target, trackingId, 'insert')),
   insertcontentbefore: (el, target, trackingId) => el
-    .insertAdjacentElement('beforebegin', createFrag(target, trackingId)),
+    .insertAdjacentElement('beforebegin', createFrag(target, trackingId, 'insert')),
   removecontent: (el, target, trackingId, preview) => {
     if (target === 'false') return;
     if (preview) {
-      const div = createTag('div', { 'data-removed-manifest-id': trackingId });
+      const div = createTag('div', { 'data-manifest-id': trackingId, 'data-manifest-action': 'remove' });
       el.insertAdjacentElement('beforebegin', div);
     }
     el.classList.add(CLASS_EL_DELETE);
   },
   replacecontent: (el, target, trackingId) => {
     if (el.classList.contains(CLASS_EL_REPLACE)) return;
-    el.insertAdjacentElement('beforebegin', createFrag(target, trackingId));
+    el.insertAdjacentElement('beforebegin', createFrag(target, trackingId, 'replace'));
     el.classList.add(CLASS_EL_DELETE, CLASS_EL_REPLACE);
   },
 };
