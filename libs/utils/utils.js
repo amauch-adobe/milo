@@ -426,7 +426,7 @@ function getCustomAnalytic(item) {
       return analytic;
     }
   }
-  return false;
+  return item.innerHTML;
 }
 
 export function decorateDefaultLinkAnalytics(block) {
