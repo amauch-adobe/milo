@@ -416,15 +416,11 @@ function processTrackingLabels(text, charLimit) {
 }
 
 function getCustomAnalytic(item) {
-  const customArray = item.innerHTML.split('[[');
-  if (customArray.length === 2) {
-    const customArray2 = customArray[1].split(']]');
-    if (customArray2.length === 2) {
-      const analytic = customArray2.splice(0, 1).toString();
-      customArray[1] = customArray2.join('');
-      item.innerHTML = customArray.join('');
-      return analytic;
-    }
+  if (item.innerHTML.includes('[[') && item.innerHTML.includes(']]')) {
+    const arr = item.innerHTML.split('[[');
+    const analytic = arr[1].split(']]')[0];
+    item.innerHTML = item.innerHTML.replace(`[[${analytic}]]`, '');
+    return analytic;
   }
   return item.innerHTML;
 }
