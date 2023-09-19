@@ -415,6 +415,20 @@ function processTrackingLabels(text, charLimit) {
     .slice(0, charLimit);
 }
 
+function getCustomAnalytic(item) {
+  const customArray = item.innerHTML.split('[[');
+  if (customArray.length === 2) {
+    const customArray2 = customArray[1].split(']]');
+    if (customArray2.length === 2) {
+      const analytic = customArray2[0];
+      customArray[1] = customArray2.join('');
+      item.innerHTML = customArray.join('');
+      return analytic;
+    }
+  }
+  return false;
+}
+
 export function decorateDefaultLinkAnalytics(block) {
   if (block.classList.length
     && !block.className.includes('metadata')
@@ -428,7 +442,7 @@ export function decorateDefaultLinkAnalytics(block) {
     block.querySelectorAll('h1, h2, h3, h4, h5, h6, a:not(.video.link-block), button, .heading-title').forEach((item) => {
       if (item.nodeName === 'A' || item.nodeName === 'BUTTON') {
         if (!item.hasAttribute('daa-ll')) {
-          let label = item.textContent;
+          let label = getCustomAnalytic(item) || item.textContent;
           if (label.trim() === '') {
             label = item.getAttribute('title') || item.getAttribute('aria-label') || item.querySelector('img')?.getAttribute('alt') || 'no label';
           }
