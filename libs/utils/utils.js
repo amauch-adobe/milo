@@ -420,7 +420,7 @@ function getCustomAnalytic(item) {
   if (customArray.length === 2) {
     const customArray2 = customArray[1].split(']]');
     if (customArray2.length === 2) {
-      const analytic = customArray2[0];
+      const analytic = customArray2.splice(0, 1).toString();
       customArray[1] = customArray2.join('');
       item.innerHTML = customArray.join('');
       return analytic;
@@ -451,7 +451,7 @@ export function decorateDefaultLinkAnalytics(block) {
         }
         linkCount += 1;
       } else {
-        header = processTrackingLabels(item.textContent, 30);
+        header = processTrackingLabels(getCustomAnalytic(item), 30);
       }
     });
   }
